@@ -44,6 +44,7 @@
 #include "EZ-Template/api.hpp"
 #include "autons.hpp"
 #include "intake.hpp"
+#include "catapult.hpp"
 
 // More includes here...
 //

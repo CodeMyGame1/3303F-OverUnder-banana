@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 /////
 // For instalattion, upgrading, documentations and tutorials, check out website!
 // https://ez-robotics.github.io/EZ-Template/
@@ -39,7 +38,16 @@
  * - L & R joystick (driving; don't need to deal with bc already handled by chassis.tank())
  * - R1 intake, L1 outtake
  * - R2 cata, L2 switch cata/drivetrain
+ * 
+ * analog (basically all of these are pistons except for port A lel):
+ * - A: bumper
+ * - B: left ball push nyooom
+ * - C: catapult pistooon nyoooom
+ * - D: intake piston
+ * - E: right ball push nyooom pistom
 */
+// [13,14] [15,17]
+
 
 
 // Chassis constructor
@@ -48,13 +56,13 @@ Drive chassis (
   //   the first port is the sensored port (when trackers are not used!)
   /**
    * TODO: add ports to code (two motors in main drivetrain) */
-  {}
+  {13, 14}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
   /**
    * TODO: add ports to code (two motors in main drivetrain) */
-  ,{}
+  ,{-15, -17}
 
   // IMU Port
   // TODO: add IMU to robot & add ports to code
@@ -106,7 +114,10 @@ void initialize() {
   
   pros::delay(500); // Stop the user from doing anything while legacy ports configure.
 
-  // Configure your chassis controls
+
+  /**
+   * TODO: Configure chassis controls
+  */
   chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
   chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
   chassis.set_curve_default(0, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
@@ -201,9 +212,10 @@ void opcontrol() {
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
   while (true) {
-
     // (left joystick controls left wheels, right joystick controls right wheels)
     chassis.tank();
+
+
     // chassis.arcade_standard(ez::SPLIT); // Standard split arcade
     // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
     // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
@@ -212,6 +224,8 @@ void opcontrol() {
     // . . .
     // Put more user control code here!
     // . . .
+    
+    catapult();
     intake();
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
