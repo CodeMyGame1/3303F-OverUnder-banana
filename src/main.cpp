@@ -56,13 +56,13 @@ Drive chassis (
   //   the first port is the sensored port (when trackers are not used!)
   /**
    * TODO: add ports to code (two motors in main drivetrain) */
-  {13, 14}
+  {13, 17}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
   /**
    * TODO: add ports to code (two motors in main drivetrain) */
-  ,{-15, -17}
+  ,{-15, -14}
 
   // IMU Port
   // TODO: add IMU to robot & add ports to code
