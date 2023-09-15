@@ -1,19 +1,19 @@
 #include "main.h"
 
 /////
-// For instalattion, upgrading, documentations and tutorials, check out website!
+// For installation, upgrading, documentations and tutorials, check out website!
 // https://ez-robotics.github.io/EZ-Template/
 /////
 
 /**
- * GENERAL TODOs:
+ * GENERAL TODO:
  * - change all single-line todo comments to double-line
  * - add port for catapult piston to code
  * - code currently implemented as switching between cata & drivetrain freely, see if you want to make it just one time
 */
 
 /**
- * Motors:
+ * Digital Ports:
  * - 4 drivetrain
  *   - blue (600rpm)
  *   - 36:1 gear ratio
@@ -36,15 +36,15 @@
  * 
  * Cwontrils:
  * - L & R joystick (driving; don't need to deal with bc already handled by chassis.tank())
- * - R1 intake, L1 outtake
- * - R2 cata, L2 switch cata/drivetrain
+ * - R1 intake, R2 outtake
+ * - (XAYB) X cata, (arrow keys) up arrow key switch cata/drivetrain & down arrow key push intake back; (L1/L2) L2 push flaps
  * 
  * analog (basically all of these are pistons except for port A lel):
- * - A: bumper
- * - B: left ball push nyooom
- * - C: catapult pistooon nyoooom
+ * - A: left wing
+ * - B: intake bumper
+ * - C: right wing
  * - D: intake piston
- * - E: right ball push nyooom pistom
+ * - E: catapult piston
 */
 // [13,14] [15,17]
 
@@ -56,16 +56,17 @@ Drive chassis (
   //   the first port is the sensored port (when trackers are not used!)
   /**
    * TODO: add ports to code (two motors in main drivetrain) */
-  {13, 17}
+  {-9, -10}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
   /**
    * TODO: add ports to code (two motors in main drivetrain) */
-  ,{-15, -14}
+  ,{1, 2}
 
   // IMU Port
-  // TODO: add IMU to robot & add ports to code
+  /**
+   * TODO: add IMU to robot & add ports to code */
   ,0
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
@@ -80,10 +81,12 @@ Drive chassis (
   //    (or gear ratio of tracking wheel)
   // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  // TODO: verify that the gear ratio is correct
+  /**
+   * TODO: verify that the gear ratio is correct */
   ,36
 
-  // TODO: remove all tracking wheel comments
+  /**
+   * TODO: remove all tracking wheel comments */
 
   // Uncomment if using tracking wheels
   /*
@@ -101,6 +104,15 @@ Drive chassis (
   // ,1
 );
 
+/**
+ * TODO: ensure that wires are positioned correctly for the piston, and that the code takes this into account
+*/
+pros::ADIDigitalOut intake_piston('D');
+bool intake_piston_enabled = false;
+
+pros::ADIDigitalOut wing_left('A');
+pros::ADIDigitalOut wing_right('C');
+bool wings_enabled = false;
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -129,7 +141,7 @@ void initialize() {
   // chassis.set_right_curve_buttons(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
 
   // Autonomous Selector using LLEMU
-  ez::as::auton_selector.add_autons({
+  /* ez::as::auton_selector.add_autons({
     Auton("Example Drive\n\nDrive forward and come back.", drive_example),
     Auton("Example Turn\n\nTurn 3 times.", turn_example),
     Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
@@ -137,11 +149,12 @@ void initialize() {
     Auton("Swing Example\n\nSwing, drive, swing.", swing_example),
     Auton("Combine all 3 movements", combining_movements),
     Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
-  });
+  }); */
 
   // Initialize chassis and auton selector
   chassis.initialize();
-  ez::as::initialize();
+  pros::lcd::initialize();
+  // ez::as::initialize();
 }
 
 
@@ -225,8 +238,26 @@ void opcontrol() {
     // Put more user control code here!
     // . . .
     
-    catapult();
+    /**
+     * TODO: consider putting these in their own file :P
+    */
+
+    if (!intake_piston_enabled) {
+      intake_piston_enabled = true;
+      intake_piston.set_value(1);
+    }
+
+    if (master.get_digital_new_press(DIGITAL_L2)) {
+      wings_enabled = !wings_enabled;
+
+      wing_left.set_value(wings_enabled);
+      wing_right.set_value(wings_enabled);
+    }
+
+    pros::lcd::clear();
+
     intake();
+    catapult();
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

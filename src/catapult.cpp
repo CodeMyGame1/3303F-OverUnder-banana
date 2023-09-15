@@ -9,19 +9,21 @@
  * piston off: catapult
 */
 
-pros::Motor_Group cata ({1, 2, -9, -10});
-
-pros::Rotation rotSensor(16);
-
 /**
- * TODO: add ports to code; probably change to analog out bc it's a multi-state piston
+ * TODO: add ports to code!
+ *       (cata_piston) probably change to ADIAnalogOut bc it's a multi-state piston
 */
-pros::ADIDigitalOut cata_piston (0);
+
+pros::Motor_Group cata ({3, -4, -7, 8});
+
+// pulling back negative; throwing forward positive
+pros::Rotation rotSensor(6);
+
+pros::ADIDigitalOut cata_piston ('E');
 
 bool rotSensorReset = false;
 // if the piston is off, then the catapult is being powered; if the piston is on, then the wheels are being powered
 bool piston_state = false;
-bool state_changing = false;
 bool cata_state = false;
 
 void catapult() {
@@ -47,36 +49,30 @@ void catapult() {
     }
 
     // catapult's piston logic
-    if (master.get_digital(DIGITAL_L2) && !state_changing) {
+    if (master.get_digital_new_press(DIGITAL_L2)) {
         piston_state = !piston_state;
         cata_piston.set_value(piston_state);
-        state_changing = true;
-
-        pros::delay(1000);
-
-        state_changing = false;
-        return;
     } 
     
     // catapult's logic
-    if (master.get_digital(DIGITAL_R2) && !piston_state) {
+    if (master.get_digital_new_press(DIGITAL_R2) && !piston_state) {
         // marks catapult as enabled, if not already
         if (!cata_state) cata_state = true;
 
         cata.move(127);
-    } else {
-        /**
-         * TODO: think of adding a guard clause to see if the catapult is already braking 
-         * (might lead to bugs, so implement ltr, when you have lots of time to test)
-        */
-        
+    } else {        
         // if the controller R2 key just got released...
         if (cata_state) {
             cata_state = !cata_state;
 
+            // start returning it to its original state
 
         }
 
+        /**
+         * TODO: think of adding a guard clause to see if the catapult is already braking 
+         * (might lead to bugs, so implement ltr, when you have lots of time to test)
+        */
         cata.brake();
     }
 }
