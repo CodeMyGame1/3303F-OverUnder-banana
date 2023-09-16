@@ -6,24 +6,33 @@
 /////
 
 /**
- * GENERAL TODO:
- * - change all single-line todo comments to double-line
- * - add port for catapult piston to code
- * - code currently implemented as switching between cata & drivetrain freely, see if you want to make it just one time
+ * TO BE TESTED:
+ * - basically all the pneumatics
 */
 
 /**
- * Digital Ports:
+ * GENERAL CHECKLIST:
+ * - check that all ports are correct (including catapult ports added to chassis)
+*/
+
+/**
+ * GENERAL TODO:
+ * - if possible, get an IMU for the robot
+ * - see if the catapult piston can change between the cata & drivetrain multiple times, instead of just one time (as is implemented now)
+*/
+
+/**
+ * At A Glance:
  * - 4 drivetrain
  *   - blue (600rpm)
  *   - 36:1 gear ratio
  *   - (11W * 4 motors = 44W)
- * - 2 cata big motors (L: 1; R: 2)
- *   - 200rpm
+ * - 2 cata big motors (L: 4; R: -5)
+ *   - <one of the colors of the rainbow> (200rpm)
  *   - 8:1 gear ratio
  *   - (11W * 2 motors = 22W)
- * - 2 cata small motors (L: -9; R: -10)
- *   - 200rpm
+ * - 2 cata small motors (L: -7; R: -8)
+ *   - <one of the colors of the rainbow> (200rpm)
  *   - 8:1 gear ratio
  *   - (5.5W * 2 motors = 11W)
  * - 1 intake motor (port 4)
@@ -39,39 +48,47 @@
  * - R1 intake, R2 outtake
  * - (XAYB) X cata, (arrow keys) up arrow key switch cata/drivetrain & down arrow key push intake back; (L1/L2) L2 push flaps
  * 
- * analog (basically all of these are pistons except for port A lel):
- * - A: left wing
+ * analog:
+ * - A: left wing PISTON
  * - B: intake bumper
- * - C: right wing
- * - D: intake piston
- * - E: catapult piston
+ * - C: right wing PISTON
+ * - D: intake PISTON
+ * - E: catapult PISTON
 */
+
 // [13,14] [15,17]
-
-
 
 // Chassis constructor
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  /**
-   * TODO: add ports to code (two motors in main drivetrain) */
-  {-9, -10}
+  {
+    // original drivetrain ports
+    -9, -10,
+
+    // "catapult" ports (temporarily adding bc catapult not working)
+    -4, 5
+  }
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  /**
-   * TODO: add ports to code (two motors in main drivetrain) */
-  ,{1, 2}
+  ,{
+    // original drivetrain ports
+    2, 3
 
-  // IMU Port
+    // "catapult" ports (temporarily adding bc catapult not working)
+    -7, 8
+  }
+
   /**
-   * TODO: add IMU to robot & add ports to code */
+   * TODO: the robot quite verifiably does NOT have an IMU at this point in time
+  */
+  // IMU Port
   ,0
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
-  ,3.125
+  ,3.25
 
   // Cartridge RPM
   //   (or tick per rotation if using tracking wheels)
@@ -83,10 +100,10 @@ Drive chassis (
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
   /**
    * TODO: verify that the gear ratio is correct */
-  ,36
+  ,1.667
 
   /**
-   * TODO: remove all tracking wheel comments */
+   * TODO: (2) remove all tracking wheel comments */
 
   // Uncomment if using tracking wheels
   /*
@@ -105,7 +122,7 @@ Drive chassis (
 );
 
 /**
- * TODO: ensure that wires are positioned correctly for the piston, and that the code takes this into account
+ * TODO: ensure that (pneumatics) wires are positioned correctly for the pistons, and that the code takes this into account
 */
 pros::ADIDigitalOut intake_piston('D');
 bool intake_piston_enabled = false;
@@ -128,7 +145,7 @@ void initialize() {
 
 
   /**
-   * TODO: Configure chassis controls
+   * TODO: (2) Configure chassis controls
   */
   chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
   chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
@@ -257,7 +274,9 @@ void opcontrol() {
     pros::lcd::clear();
 
     intake();
-    catapult();
+
+    // catapult does not work hehe
+    // catapult();
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

@@ -7,7 +7,7 @@
 /**
  * TODO: add ports to code!
 */
-pros::Motor intake_(5);
+pros::Motor intake_(6);
 pros::ADIDigitalIn intake_button('B');
 bool intakeReset = false;
 bool intakeRunning = false;
@@ -44,6 +44,6 @@ void intake() {
     } else if (master.get_digital(DIGITAL_R2)) {
         intake_.move(-127);
     } else { intake_.brake(); }
-
+ 
     pros::lcd::set_text(0, std::to_string((bool)intake_button.get_value()));
 }
