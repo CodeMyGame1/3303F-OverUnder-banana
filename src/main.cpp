@@ -27,7 +27,7 @@
  *   - blue (600rpm)
  *   - 36:1 gear ratio
  *   - (11W * 4 motors = 44W)
- * - 2 cata big motors (L: 4; R: -5)
+ * - 2 cata big motors (L: {-9, -10}; R: -10)
  *   - <one of the colors of the rainbow> (200rpm)
  *   - 8:1 gear ratio
  *   - (11W * 2 motors = 22W)
@@ -64,20 +64,24 @@ Drive chassis (
   //   the first port is the sensored port (when trackers are not used!)
   {
     // original drivetrain ports
-    -9, -10,
+    // -9, -10,
+    -2, -3,
 
     // "catapult" ports (temporarily adding bc catapult not working)
-    -4, 5
+    // 4, -5
+    -7, 8
   }
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
   ,{
     // original drivetrain ports
-    2, 3
+    // 2, 3,
+    9, 10,
 
     // "catapult" ports (temporarily adding bc catapult not working)
-    -7, 8
+    // 7, -8
+    -4, 5
   }
 
   /**
@@ -98,8 +102,6 @@ Drive chassis (
   //    (or gear ratio of tracking wheel)
   // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  /**
-   * TODO: verify that the gear ratio is correct */
   ,1.667
 
   /**
@@ -219,7 +221,7 @@ void autonomous() {
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
   chassis.set_drive_brake(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
-  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
+  chassis.set_drive_pid(-30, 120);
 }
 
 
@@ -259,11 +261,13 @@ void opcontrol() {
      * TODO: consider putting these in their own file :P
     */
 
+    // makes sure intake is pushed down at beginning of program
     if (!intake_piston_enabled) {
       intake_piston_enabled = true;
       intake_piston.set_value(1);
     }
 
+    // handles wings
     if (master.get_digital_new_press(DIGITAL_L2)) {
       wings_enabled = !wings_enabled;
 
@@ -273,9 +277,14 @@ void opcontrol() {
 
     pros::lcd::clear();
 
+    // enables intake piston at start of program
+    if (!intake_piston_enabled) {
+      intake_piston_enabled = true;
+      intake_piston.set_value(1);
+    }
+
     intake();
 
-    // catapult does not work hehe
     // catapult();
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME

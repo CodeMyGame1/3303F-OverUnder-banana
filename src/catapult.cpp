@@ -16,11 +16,11 @@
  * TODO: consider using "!pros::Motor::get_port()" to define the ports for the pros::Motor_Group "cata"
 */
 
-pros::Motor cataLeft1 (-4);
-pros::Motor cataLeft2 (5);
-pros::Motor cataRight1 (-7);
-pros::Motor cataRight2 (8);
-pros::Motor_Group cata ({4, -5, 7, -8});
+pros::Motor cataLeft1 (4);
+pros::Motor cataLeft2 (-5);
+pros::Motor cataRight1 (7);
+pros::Motor cataRight2 (-8);
+pros::Motor_Group cata ({-4, 5, -7, 8});
 
 // pulling back negative; throwing forward positive
 pros::Rotation rotSensor(1);
@@ -106,6 +106,9 @@ void catapult() {
     }
 
     // handles switching between catapult and drivetrain powering
+    /**
+     * TODO: not working; should comment out?
+    */
     if (master.get_digital_new_press(DIGITAL_X) && master.get_digital_new_press(DIGITAL_UP)) {
         piston_state = true;
         cata_piston.set_value(piston_state);

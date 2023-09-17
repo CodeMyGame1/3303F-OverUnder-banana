@@ -248,3 +248,7 @@ void interfered_example() {
 // . . .
 // Make your own autonomous functions here!
 // . . .
+
+void goback() {
+  chassis.set_drive_pid(-30, 127);
+}

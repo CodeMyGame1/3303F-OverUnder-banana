@@ -9,8 +9,8 @@
 */
 pros::Motor intake_(6);
 pros::ADIDigitalIn intake_button('B');
-bool intakeReset = false;
-bool intakeRunning = false;
+// bool intakeReset = false;
+// bool intakeRunning = false;
 
 void intake() {
     // // set intake motor's brake mode in the beginning
@@ -38,11 +38,13 @@ void intake() {
     //     intakeRunning = false;
     //     intake_.brake();
     // }
-
+    
+    // intake
     if (master.get_digital(DIGITAL_R1) && !intake_button.get_value()) {
-        intake_.move(127);
-    } else if (master.get_digital(DIGITAL_R2)) {
         intake_.move(-127);
+    // outtake
+    } else if (master.get_digital(DIGITAL_R2)) {
+        intake_.move(127);
     } else { intake_.brake(); }
  
     pros::lcd::set_text(0, std::to_string((bool)intake_button.get_value()));
