@@ -7,38 +7,29 @@
 /**
  * TODO: add ports to code!
 */
+
 pros::Motor intake_(6);
 pros::ADIDigitalIn intake_button('B');
-// bool intakeReset = false;
+
+pros::ADIDigitalOut intake_piston('D');
+bool intake_piston_enabled = false;
+bool intake_reset = false;
 // bool intakeRunning = false;
 
 void intake() {
-    // // set intake motor's brake mode in the beginning
-    // if (!intakeReset) {
-    //     intake_.set_brake_mode(MOTOR_BRAKE_HOLD);
-    //     intakeReset = true;
-    // }
+    // at the beginning of the program...
+    if (!intake_reset) {
+        // set intake motor's brake mode in the beginning
+        intake_.set_brake_mode(MOTOR_BRAKE_HOLD);
+        // push the intake down, if it's not already in that position
+        intake_piston.set_value(1);
+        
+        intake_reset = true;
+    }
 
-    // // 1 means button not being pressed, 0 means button AHHHHHHHHH
-    // // do not attempt to crush le button if crushing is already taking place
-    // if (master.get_digital(DIGITAL_R1) && !intake_button.get_value()) {
-    //     intakeRunning = true;
-    //     intake_.move(87);
-    // } else if (!master.get_digital(DIGITAL_R1) && intakeRunning) {
-    //     intakeRunning = false;
-    //     intake_.brake();
-    // } else if (master.get_digital(DIGITAL_R2)) {
-    //     intakeRunning = true;
-
-    //     /**
-    //      * TODO: outtake is not running powerfully
-    //     */
-    //     intake_.move(-127);
-    // } else if (!master.get_digital(DIGITAL_R2) && intakeRunning) {
-    //     intakeRunning = false;
-    //     intake_.brake();
-    // }
-    
+    /**
+     * 1 means button not being pressed (triball not in possession), 0 means button is being pressed
+     */    
     // intake
     if (master.get_digital(DIGITAL_R1) && !intake_button.get_value()) {
         intake_.move(-127);

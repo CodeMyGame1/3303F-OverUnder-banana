@@ -6,11 +6,6 @@
 /////
 
 /**
- * TO BE TESTED:
- * - basically all the pneumatics
-*/
-
-/**
  * GENERAL CHECKLIST:
  * - check that all ports are correct (including catapult ports added to chassis)
 */
@@ -22,20 +17,32 @@
 */
 
 /**
+ * Miscellaneous Information:
+ * 
+ * Motor RPMs:
+ * - Blue Motors: 600rpm
+ * - Green Motors: 200rpm
+ * - Red Motors: 100rpm
+*/
+
+/**
  * At A Glance:
- * - 4 drivetrain
+ * 
+ * Motors:
+ * - 4 drivetrain (L: {TBD, TBD}; R: {TBD, TBD})
  *   - blue (600rpm)
  *   - 36:1 gear ratio
  *   - (11W * 4 motors = 44W)
- * - 2 cata big motors (L: {-9, -10}; R: -10)
- *   - <one of the colors of the rainbow> (200rpm)
- *   - 8:1 gear ratio
- *   - (11W * 2 motors = 22W)
- * - 2 cata small motors (L: -7; R: -8)
- *   - <one of the colors of the rainbow> (200rpm)
- *   - 8:1 gear ratio
- *   - (5.5W * 2 motors = 11W)
- * - 1 intake motor (port 4)
+ * - 2 pairs of big and small cata motors (L: {TBD, TBD}; R: {TBD, TBD})
+ *   - big motors
+ *     - <one of the colors of the rainbow> (200rpm)
+ *     - 8:1 gear ratio
+ *     - (11W * 2 motors = 22W)
+ *   - small motors
+ *     - <one of the colors of the rainbow> (200rpm)
+ *     - 8:1 gear ratio
+ *     - (5.5W * 2 motors = 11W)
+ * - 1 intake motor (TBD)
  *   - green (200rpm)
  *   - 1:3 gear ratio 
  *   - (11W * 1 motor = 11W)
@@ -126,12 +133,6 @@ Drive chassis (
 /**
  * TODO: ensure that (pneumatics) wires are positioned correctly for the pistons, and that the code takes this into account
 */
-pros::ADIDigitalOut intake_piston('D');
-bool intake_piston_enabled = false;
-
-pros::ADIDigitalOut wing_left('A');
-pros::ADIDigitalOut wing_right('C');
-bool wings_enabled = false;
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -140,11 +141,7 @@ bool wings_enabled = false;
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  // Print our branding over your terminal :D
-  ez::print_ez_template();
-  
   pros::delay(500); // Stop the user from doing anything while legacy ports configure.
-
 
   /**
    * TODO: (2) Configure chassis controls
@@ -172,7 +169,11 @@ void initialize() {
 
   // Initialize chassis and auton selector
   chassis.initialize();
+
+  // LCD goofiness
+
   pros::lcd::initialize();
+  
   // ez::as::initialize();
 }
 
@@ -247,45 +248,17 @@ void opcontrol() {
     // (left joystick controls left wheels, right joystick controls right wheels)
     chassis.tank();
 
-
-    // chassis.arcade_standard(ez::SPLIT); // Standard split arcade
-    // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
-    // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
-    // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
-
-    // . . .
-    // Put more user control code here!
-    // . . .
-    
     /**
-     * TODO: consider putting these in their own file :P
-    */
-
-    // makes sure intake is pushed down at beginning of program
-    if (!intake_piston_enabled) {
-      intake_piston_enabled = true;
-      intake_piston.set_value(1);
-    }
-
-    // handles wings
-    if (master.get_digital_new_press(DIGITAL_L2)) {
-      wings_enabled = !wings_enabled;
-
-      wing_left.set_value(wings_enabled);
-      wing_right.set_value(wings_enabled);
-    }
-
-    pros::lcd::clear();
-
-    // enables intake piston at start of program
-    if (!intake_piston_enabled) {
-      intake_piston_enabled = true;
-      intake_piston.set_value(1);
-    }
-
+     * Custom Functions
+     */
     intake();
+    catapult();
+    wings();
 
-    // catapult();
+    /**
+     * LCD
+     */
+    pros::lcd::print(0, "Buttons Bitmap: %d\n", pros::lcd::read_buttons());
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

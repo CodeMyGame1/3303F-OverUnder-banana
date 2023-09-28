@@ -43,8 +43,9 @@
 //#include "pros/api_legacy.h"
 #include "EZ-Template/api.hpp"
 #include "autons.hpp"
-#include "intake.hpp"
 #include "catapult.hpp"
+#include "intake.hpp"
+#include "wings.hpp"
 
 // More includes here...
 //
