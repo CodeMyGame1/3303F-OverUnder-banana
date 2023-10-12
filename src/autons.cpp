@@ -65,7 +65,10 @@ void modified_exit_condition() {
   chassis.set_exit_condition(chassis.drive_exit, 80, 50, 300, 150, 500, 500);
 }
 
-
+void push_into_goal() {
+  chassis.set_drive_pid(30, DRIVE_SPEED, false);
+  chassis.wait_drive();
+}
 
 ///
 // Drive Example

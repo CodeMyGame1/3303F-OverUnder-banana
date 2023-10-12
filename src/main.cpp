@@ -1,4 +1,5 @@
 #include "main.h"
+ 
 
 /////
 // For installation, upgrading, documentations and tutorials, check out website!
@@ -7,13 +8,21 @@
 
 /**
  * GENERAL CHECKLIST:
- * - check that all ports are correct (including catapult ports added to chassis)
+ * - check that all ports are correct
+ * - check driver controls
 */
 
 /**
  * GENERAL TODO:
- * - if possible, get an IMU for the robot
- * - see if the catapult piston can change between the cata & drivetrain multiple times, instead of just one time (as is implemented now)
+ * - replace ports throughout the code!!!
+ * - which part of the robot is the front?
+ * - check controls for the robot
+ * - tune PID
+*/
+
+/**
+ * GENERAL IMPROVEMENTS:
+ * - implement a PID and odometry system!
 */
 
 /**
@@ -23,6 +32,10 @@
  * - Blue Motors: 600rpm
  * - Green Motors: 200rpm
  * - Red Motors: 100rpm
+*/
+
+/**
+ * TODO: once robot building is done, double-check and verify the information in "At A Glance"
 */
 
 /**
@@ -70,10 +83,16 @@ Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
   {
+    /**
+     * TODO: replace ports!
+    */
     // original drivetrain ports
     // -9, -10,
     -2, -3,
 
+    /**
+     * TODO: replace ports!
+    */
     // "catapult" ports (temporarily adding bc catapult not working)
     // 4, -5
     -7, 8
@@ -82,22 +101,28 @@ Drive chassis (
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
   ,{
+    /**
+     * TODO: replace ports!
+    */
     // original drivetrain ports
     // 2, 3,
     9, 10,
 
+    /**
+     * TODO: replace ports!
+    */
     // "catapult" ports (temporarily adding bc catapult not working)
     // 7, -8
     -4, 5
   }
 
   /**
-   * TODO: the robot quite verifiably does NOT have an IMU at this point in time
+   * TODO: add IMU port!
   */
   // IMU Port
   ,0
 
-  // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
+  // Wheel Diameter (Remember, 4" omni-wheels are actually 4.125!)
   //    (or tracking wheel diameter)
   ,3.25
 
@@ -166,15 +191,14 @@ void initialize() {
     Auton("Combine all 3 movements", combining_movements),
     Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
   }); */
+  ez::as::auton_selector.add_autons({
+    Auton("Autonomous Period - Auton", push_into_goal)
+  });
 
   // Initialize chassis and auton selector
   chassis.initialize();
-
-  // LCD goofiness
-
-  pros::lcd::initialize();
   
-  // ez::as::initialize();
+  ez::as::initialize();
 }
 
 
@@ -222,7 +246,7 @@ void autonomous() {
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
   chassis.set_drive_brake(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
-  chassis.set_drive_pid(-30, 120);
+  chassis.set_drive_pid(-30, 120, true);
 }
 
 

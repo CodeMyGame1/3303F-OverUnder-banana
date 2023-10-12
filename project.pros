@@ -189,7 +189,8 @@
       }
     },
     "upload_options": {
-      "icon": "pizza"
+      "icon": "pizza",
+      "description": "The official competition code, in the 2023-2024 Over Under challenge, for team 3303F"
     }
   }
 }

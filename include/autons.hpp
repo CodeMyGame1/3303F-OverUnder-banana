@@ -4,6 +4,8 @@
 
 extern Drive chassis;
 
+void push_into_goal();
+
 void drive_example();
 void turn_example();
 void drive_and_turn();
