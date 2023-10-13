@@ -2,7 +2,7 @@
 
 pros::Motor intake_(6);
 
-pros::ADIDigitalOut intake_piston('D');
+pros::ADIDigitalOut intake_piston('C');
 bool intake_piston_enabled = false;
 bool intake_reset = false;
 

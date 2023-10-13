@@ -16,13 +16,13 @@
 */
 
 // used to transfer the catapult's motors to the chassis, and vice versa
-pros::Motor cataLeft1 (4);
-pros::Motor cataLeft2 (-5);
-pros::Motor cataRight1 (7);
-pros::Motor cataRight2 (-8);
+pros::Motor cataLeft1 (5);
+pros::Motor cataLeft2 (-10);
+pros::Motor cataRight1 (9);
+pros::Motor cataRight2 (-7);
 
 pros::Motor_Group cata ({
-    -4, 5, -7, 8
+    -5, 10, -9, 7
 });
 
 // pros::Motor_Group cata ({
@@ -50,8 +50,7 @@ pros::Rotation rotSensor(1);
  * A value of 0 means that the catapult is enabled.
  * A value of 1 means that the drivetrain is enabled.
  */
-pros::ADIDigitalOut cata_piston_1 ('E');
-pros::ADIDigitalOut cata_piston_2 ('A');
+pros::ADIDigitalOut cata_piston ('B');
 // the pistons start in the off position (catapult)
 bool piston_state = false;
 
@@ -65,8 +64,7 @@ void catapult() {
             rotSensor.reset();
 
             // sets catapult pistons to false (enables the catapult, by default, at the beginning of the program)
-            cata_piston_1.set_value(false);
-            cata_piston_2.set_value(false);
+            cata_piston.set_value(false);
 
             // makes the catapult hold its current position if the motors stop turning
             cata.set_brake_modes(MOTOR_BRAKE_HOLD);
@@ -75,7 +73,7 @@ void catapult() {
         }
 
         if (abs(rotSensor.get_angle()/100-75) > 5 || cata_state) {
-            cata.move_voltage(12000);
+            cata.move(75);
         } else { cata.brake(); }
 
         if (master.get_digital_new_press(DIGITAL_A)) {
@@ -89,8 +87,7 @@ void catapult() {
     */
     if (master.get_digital_new_press(DIGITAL_X) && master.get_digital_new_press(DIGITAL_UP)) {
         piston_state = !piston_state;
-        cata_piston_1.set_value(piston_state);
-        cata_piston_2.set_value(piston_state);
+        cata_piston.set_value(piston_state);
         
         // if we're toggling FROM the catapult TO the drivetrain, add the "catapult" motors to the drivetrain
         if (!piston_state) {

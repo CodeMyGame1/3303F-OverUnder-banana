@@ -42,11 +42,11 @@
  * At A Glance:
  * 
  * Motors:
- * - 4 drivetrain (L: {TBD, TBD}; R: {TBD, TBD})
+ * - 4 drivetrain (L: {1, 4}; R: {3, 2})
  *   - blue (600rpm)
  *   - 36:1 gear ratio
  *   - (11W * 4 motors = 44W)
- * - 2 pairs of big and small cata motors (L: {TBD, TBD}; R: {TBD, TBD})
+ * - 2 pairs of big and small cata motors (L: {5, -10}; R: {-9, 7})
  *   - big motors
  *     - <one of the colors of the rainbow> (200rpm)
  *     - 8:1 gear ratio
@@ -55,7 +55,7 @@
  *     - <one of the colors of the rainbow> (200rpm)
  *     - 8:1 gear ratio
  *     - (5.5W * 2 motors = 11W)
- * - 1 intake motor (TBD)
+ * - 1 intake motor (6)
  *   - green (200rpm)
  *   - 1:3 gear ratio 
  *   - (11W * 1 motor = 11W)
@@ -88,14 +88,7 @@ Drive chassis (
     */
     // original drivetrain ports
     // -9, -10,
-    -2, -3,
-
-    /**
-     * TODO: replace ports!
-    */
-    // "catapult" ports (temporarily adding bc catapult not working)
-    // 4, -5
-    -7, 8
+    -1, -4,
   }
 
   // Right Chassis Ports (negative port will reverse it!)
@@ -106,21 +99,14 @@ Drive chassis (
     */
     // original drivetrain ports
     // 2, 3,
-    9, 10,
-
-    /**
-     * TODO: replace ports!
-    */
-    // "catapult" ports (temporarily adding bc catapult not working)
-    // 7, -8
-    -4, 5
+    3, 2,
   }
 
   /**
    * TODO: add IMU port!
   */
   // IMU Port
-  ,0
+  ,11
 
   // Wheel Diameter (Remember, 4" omni-wheels are actually 4.125!)
   //    (or tracking wheel diameter)
