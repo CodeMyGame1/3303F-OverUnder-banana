@@ -1,4 +1,5 @@
 #include "main.h"
+using namespace std;
 
 /**
  * TODO: <in general> consider fetching all controller states from opcontrol() in main.cpp instead of fetching individually
@@ -72,36 +73,38 @@ void catapult() {
             cata_reset = true;
         }
 
-        if (abs(rotSensor.get_angle()/100-75) > 5 || cata_state) {
-            cata.move(75);
+        if (abs(rotSensor.get_angle()/100-315) > 10 || cata_state) {
+            cata.move(120);
         } else { cata.brake(); }
 
         if (master.get_digital_new_press(DIGITAL_A)) {
             cata_state = !cata_state;
         }
+        cout << abs(rotSensor.get_angle()/100-315) << endl;
     }
 
+    
     // handles switching between catapult and drivetrain powering
     /**
      * TODO: not working; should comment out?
     */
-    if (master.get_digital_new_press(DIGITAL_X) && master.get_digital_new_press(DIGITAL_UP)) {
-        piston_state = !piston_state;
-        cata_piston.set_value(piston_state);
+    // if (master.get_digital_new_press(DIGITAL_X) && master.get_digital_new_press(DIGITAL_UP)) {
+    //     piston_state = !piston_state;
+    //     cata_piston.set_value(piston_state);
         
-        // if we're toggling FROM the catapult TO the drivetrain, add the "catapult" motors to the drivetrain
-        if (!piston_state) {
-            // chassis.left_motors.push_back(cataLeft1);
-            // chassis.left_motors.push_back(cataLeft2);
-            chassis.left_motors.insert(chassis.left_motors.end(), {cataLeft1, cataLeft2});
-            // chassis.right_motors.push_back(cataRight1);
-            // chassis.right_motors.push_back(cataRight2);
-            chassis.left_motors.insert(chassis.left_motors.end(), {cataRight1, cataRight2});
-        } 
-        // if we're toggling FROM the drivetrain TO the catapult, remove the "catapult" motors from the drivetrain
-        else if (piston_state) { 
-            chassis.left_motors.erase(chassis.left_motors.end() - 2, chassis.left_motors.end());
-            chassis.right_motors.erase(chassis.right_motors.end() - 2, chassis.right_motors.end());
-        }
-    }
+    //     // if we're toggling FROM the catapult TO the drivetrain, add the "catapult" motors to the drivetrain
+    //     if (!piston_state) {
+    //         chassis.left_motors.push_back(cataLeft1);
+    //         chassis.left_motors.push_back(cataLeft2);
+    //         // chassis.left_motors.insert(chassis.left_motors.end(), {cataLeft1, cataLeft2});
+    //         chassis.right_motors.push_back(cataRight1);
+    //         chassis.right_motors.push_back(cataRight2);
+    //         // chassis.left_motors.insert(chassis.left_motors.end(), {cataRight1, cataRight2});
+    //     } 
+    //     // if we're toggling FROM the drivetrain TO the catapult, remove the "catapult" motors from the drivetrain
+    //     else if (piston_state) { 
+    //         chassis.left_motors.erase(chassis.left_motors.end() - 2, chassis.left_motors.end());
+    //         chassis.right_motors.erase(chassis.right_motors.end() - 2, chassis.right_motors.end());
+    //     }
+    // }
 }

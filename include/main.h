@@ -46,6 +46,7 @@
 #include "catapult.hpp"
 #include "intake.hpp"
 #include "wings.hpp"
+#include <iostream>
 
 // More includes here...
 //
