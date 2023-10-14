@@ -44,7 +44,7 @@ bool cata_state = false;
  * A positive value means that the catapult is throwing (literally, and maybe figuratively).
  */
 // pulling back negative; throwing forward positive
-pros::Rotation rotSensor(1);
+pros::Rotation rotSensor(20);
 
 /** LEGACY:
  * 
@@ -73,7 +73,7 @@ void catapult() {
             cata_reset = true;
         }
 
-        if (abs(rotSensor.get_angle()/100-315) > 10 || cata_state) {
+        if (abs(rotSensor.get_angle()/100-305) > 10 || cata_state) {
             cata.move(120);
         } else { cata.brake(); }
 
