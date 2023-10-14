@@ -16,14 +16,41 @@ using namespace std;
  * TODO: consider using "!pros::Motor::get_port()" to define the ports for the pros::Motor_Group "cata"
 */
 
+pros::Motor& cataLeft1 = chassis.left_motors[2];
+pros::Motor& cataLeft2 = chassis.left_motors[3];
+pros::Motor& cataRight1 = chassis.right_motors[2];
+pros::Motor& cataRight2 = chassis.right_motors[3];
+
+
 // used to transfer the catapult's motors to the chassis, and vice versa
-pros::Motor cataLeft1 (5);
-pros::Motor cataLeft2 (-10);
-pros::Motor cataRight1 (9);
-pros::Motor cataRight2 (-7);
+// pros::Motor cataLeft1 = chassis.left_motors[2];
+// pros::Motor cataLeft2 = chassis.left_motors[3];
+// pros::Motor cataRight1 = chassis.right_motors[2];
+// pros::Motor cataRight2 = chassis.right_motors[3];
+
+std::vector<pros::Motor> left_catapult = {
+    pros::Motor(-1), 
+    pros::Motor(-4)
+};
+std::vector<pros::Motor> right_catapult = {
+    pros::Motor(-1), 
+    pros::Motor(-4), 
+    pros::Motor(5), 
+    pros::Motor(-10)
+};
+std::vector<pros::Motor> left_chassis = {
+    pros::Motor(3), 
+    pros::Motor(2)
+};
+std::vector<pros::Motor> right_chassis = {
+    pros::Motor(3), 
+    pros::Motor(2), 
+    pros::Motor(-9), 
+    pros::Motor(7)
+};
 
 pros::Motor_Group cata ({
-    -5, 10, -9, 7
+    5, -10, -9, 7
 });
 
 // pros::Motor_Group cata ({
@@ -37,27 +64,17 @@ pros::Motor_Group cata ({
 bool cata_reset = false;
 bool cata_state = false;
 
-
-/** LEGACY:
- * 
- * A negative value means that the catapult is being pulled back.
- * A positive value means that the catapult is throwing (literally, and maybe figuratively).
- */
 // pulling back negative; throwing forward positive
 pros::Rotation rotSensor(20);
 
-/** LEGACY:
- * 
- * A value of 0 means that the catapult is enabled.
- * A value of 1 means that the drivetrain is enabled.
- */
+// 0: catapult enabled; 1: catapult disabled
 pros::ADIDigitalOut cata_piston ('B');
 // the pistons start in the off position (catapult)
 bool piston_state = false;
 
-
 void catapult() {
     // only allows motor movement when the catapult is enabled (otherwise it risks moving the drivetrain when the catapult controls are used)
+    
     if (!piston_state) {
         // runs initialization code
         if (!cata_reset) {
@@ -65,16 +82,16 @@ void catapult() {
             rotSensor.reset();
 
             // sets catapult pistons to false (enables the catapult, by default, at the beginning of the program)
-            cata_piston.set_value(false);
+            cata_piston.set_value(0);
 
             // makes the catapult hold its current position if the motors stop turning
-            cata.set_brake_modes(MOTOR_BRAKE_HOLD);
+            // cata.set_brake_modes(MOTOR_BRAKE_HOLD);
             
             cata_reset = true;
         }
 
-        if (abs(rotSensor.get_angle()/100-305) > 10 || cata_state) {
-            cata.move(120);
+        if (abs(rotSensor.get_angle()/100-305) > 5 || cata_state) {
+            cata.move(-127);
         } else { cata.brake(); }
 
         if (master.get_digital_new_press(DIGITAL_A)) {
@@ -82,29 +99,35 @@ void catapult() {
         }
         cout << abs(rotSensor.get_angle()/100-315) << endl;
     }
-
     
     // handles switching between catapult and drivetrain powering
     /**
      * TODO: not working; should comment out?
     */
-    // if (master.get_digital_new_press(DIGITAL_X) && master.get_digital_new_press(DIGITAL_UP)) {
-    //     piston_state = !piston_state;
-    //     cata_piston.set_value(piston_state);
-        
-    //     // if we're toggling FROM the catapult TO the drivetrain, add the "catapult" motors to the drivetrain
-    //     if (!piston_state) {
-    //         chassis.left_motors.push_back(cataLeft1);
-    //         chassis.left_motors.push_back(cataLeft2);
-    //         // chassis.left_motors.insert(chassis.left_motors.end(), {cataLeft1, cataLeft2});
-    //         chassis.right_motors.push_back(cataRight1);
-    //         chassis.right_motors.push_back(cataRight2);
-    //         // chassis.left_motors.insert(chassis.left_motors.end(), {cataRight1, cataRight2});
-    //     } 
-    //     // if we're toggling FROM the drivetrain TO the catapult, remove the "catapult" motors from the drivetrain
-    //     else if (piston_state) { 
-    //         chassis.left_motors.erase(chassis.left_motors.end() - 2, chassis.left_motors.end());
-    //         chassis.right_motors.erase(chassis.right_motors.end() - 2, chassis.right_motors.end());
-    //     }
-    // }
+    if (master.get_digital_new_press(DIGITAL_X)) {
+        piston_state = !piston_state;
+        cata_piston.set_value(piston_state);
+
+        // cataLeft1.set_reversed(true);
+        // cataLeft2.set_reversed(false);
+        // cataRight1.set_reversed(false);
+        // cataRight2.set_reversed(true);
+        // if piston state is false, catapult is enabled, which means pto should be enabled tooo....?????
+        // chassis.pto_toggle({cataLeft1, cataLeft2}, piston_state);
+        // chassis.pto_toggle({cataRight1, cataRight2}, piston_state);
+
+        // // !piston_state; if we're toggling FROM the catapult TO the drivetrain, add the "catapult" motors to the drivetrain
+        // if (!piston_state) {
+        //     // chassis.left_motors = left_chassis;
+        //     // chassis.right_motors = right_chassis;
+
+        //     chassis.left_motors.push_back({cataLeft1, cataLeft2});
+        //     chassis.right_motors.push_back({cataRight1, cataRight2});
+        // }
+        // // piston_state; if we're toggling FROM the drivetrain TO the catapult, remove the "catapult" motors from the drivetrain
+        // else if (piston_state) {
+        //     // chassis.left_motors = left_catapult;
+        //     // chassis.right_motors = right_catapult;
+        // }
+    }
 }

@@ -1,7 +1,7 @@
 #include "main.h"
 
 pros::ADIDigitalOut wing('A');
-bool wings_enabled = false;
+bool wings_enabled = true;
 bool wings_reset = false;
 
 void wings() {

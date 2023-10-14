@@ -76,7 +76,8 @@
  * - E: catapult PISTON
 */
 
-// [13,14] [15,17]
+// std::vector<pros::Motor> chassis_left_motors;
+// std::vector<pros::Motor> chassis_right_motors;
 
 // Chassis constructor
 Drive chassis (
@@ -86,13 +87,15 @@ Drive chassis (
     /**
      * TODO: replace ports!
     */
-    // original drivetrain ports
-    // -9, -10,
+    // main drivetrain motors
     -1, -4,
-  }
 
+    // // catapult left motors
+    -5, 10,
+  }
+  
   // Right Chassis Ports (negative port will reverse it!)
-  //   the first port is the sensored port (when trackers are not used!)
+  // the first port is the sensored port (when trackers are not used!)
   ,{
     /**
      * TODO: replace ports!
@@ -100,6 +103,9 @@ Drive chassis (
     // original drivetrain ports
     // 2, 3,
     3, 2,
+
+    // // catapult left motors
+    9, -7
   }
 
   /**
@@ -180,6 +186,7 @@ void initialize() {
   ez::as::auton_selector.add_autons({
     Auton("Autonomous Period - Auton", push_into_goal)
   });
+  
 
   // Initialize chassis and auton selector
   chassis.initialize();
@@ -232,7 +239,11 @@ void autonomous() {
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
   chassis.set_drive_brake(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
-  chassis.set_drive_pid(-30, 120, true);
+  chassis.set_drive_pid(-35, 127, true);
+  chassis.set_drive_pid(-35, 127, true);
+  chassis.wait_drive();
+  chassis.set_drive_pid(30, 127, true);
+  chassis.set_drive_pid(30, 127, true);
 }
 
 

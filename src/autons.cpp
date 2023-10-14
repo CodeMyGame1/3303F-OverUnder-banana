@@ -66,7 +66,8 @@ void modified_exit_condition() {
 }
 
 void push_into_goal() {
-  chassis.set_drive_pid(30, DRIVE_SPEED, false);
+  catapult();
+  chassis.set_drive_pid(-3500, 200);
   chassis.wait_drive();
 }
 
