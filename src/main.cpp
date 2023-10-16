@@ -90,8 +90,8 @@ Drive chassis (
     // main drivetrain motors
     -1, -4,
 
-    // // catapult left motors
-    -5, 10,
+    // -5, 10
+    5, -10,
   }
   
   // Right Chassis Ports (negative port will reverse it!)
@@ -104,8 +104,10 @@ Drive chassis (
     // 2, 3,
     3, 2,
 
-    // // catapult left motors
-    9, -7
+    // catapult left motors
+    // 9, -7
+    // 9, 7
+    -9, 7
   }
 
   /**

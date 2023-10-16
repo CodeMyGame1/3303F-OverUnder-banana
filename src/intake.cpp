@@ -12,7 +12,8 @@ void intake() {
         // set intake motor's brake mode in the beginning
         intake_.set_brake_mode(MOTOR_BRAKE_HOLD);
         // push the intake out, if it's not already in that position
-        intake_piston.set_value(1);
+        // temporarily disabled
+        // intake_piston.set_value(1);
         
         intake_reset = true;
     }

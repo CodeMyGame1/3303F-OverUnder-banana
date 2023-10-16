@@ -28,29 +28,12 @@ pros::Motor& cataRight2 = chassis.right_motors[3];
 // pros::Motor cataRight1 = chassis.right_motors[2];
 // pros::Motor cataRight2 = chassis.right_motors[3];
 
-std::vector<pros::Motor> left_catapult = {
-    pros::Motor(-1), 
-    pros::Motor(-4)
-};
-std::vector<pros::Motor> right_catapult = {
-    pros::Motor(-1), 
-    pros::Motor(-4), 
-    pros::Motor(5), 
-    pros::Motor(-10)
-};
-std::vector<pros::Motor> left_chassis = {
-    pros::Motor(3), 
-    pros::Motor(2)
-};
-std::vector<pros::Motor> right_chassis = {
-    pros::Motor(3), 
-    pros::Motor(2), 
-    pros::Motor(-9), 
-    pros::Motor(7)
-};
-
 pros::Motor_Group cata ({
-    5, -10, -9, 7
+    // 5, -10
+    // -5, 10
+    // -5, -10
+    // 9, -7 correct for right motors
+    5, 10, 9, -7
 });
 
 // pros::Motor_Group cata ({
@@ -86,6 +69,8 @@ void catapult() {
 
             // makes the catapult hold its current position if the motors stop turning
             // cata.set_brake_modes(MOTOR_BRAKE_HOLD);
+            // chassis.pto_toggle({cataLeft1, cataLeft2}, true);
+            // chassis.pto_toggle({cataRight1, cataRight2}, true);
             
             cata_reset = true;
         }
@@ -108,26 +93,11 @@ void catapult() {
         piston_state = !piston_state;
         cata_piston.set_value(piston_state);
 
-        // cataLeft1.set_reversed(true);
-        // cataLeft2.set_reversed(false);
-        // cataRight1.set_reversed(false);
-        // cataRight2.set_reversed(true);
-        // if piston state is false, catapult is enabled, which means pto should be enabled tooo....?????
-        // chassis.pto_toggle({cataLeft1, cataLeft2}, piston_state);
-        // chassis.pto_toggle({cataRight1, cataRight2}, piston_state);
+        // // if piston state is false, catapult is enabled, which means pto should be enabled tooo....?????
+        // chassis.pto_toggle({cataLeft1, cataLeft2}, !piston_state);
+        // chassis.pto_toggle({cataRight1, cataRight2}, !piston_state);
 
-        // // !piston_state; if we're toggling FROM the catapult TO the drivetrain, add the "catapult" motors to the drivetrain
-        // if (!piston_state) {
-        //     // chassis.left_motors = left_chassis;
-        //     // chassis.right_motors = right_chassis;
-
-        //     chassis.left_motors.push_back({cataLeft1, cataLeft2});
-        //     chassis.right_motors.push_back({cataRight1, cataRight2});
-        // }
-        // // piston_state; if we're toggling FROM the drivetrain TO the catapult, remove the "catapult" motors from the drivetrain
-        // else if (piston_state) {
-        //     // chassis.left_motors = left_catapult;
-        //     // chassis.right_motors = right_catapult;
-        // }
+        // !piston_state; if we're toggling FROM the catapult TO the drivetrain, add the "catapult" motors to the drivetrain
+        // piston_state; if we're toggling FROM the drivetrain TO the catapult, remove the "catapult" motors from the drivetrain
     }
 }
